@@ -15,13 +15,15 @@ It was created using [this](https://www.youtube.com/watch?v=_ISAA_Jt9kI&ab_chann
 
 # Status
 
--
+- [![Netlify Status](https://api.netlify.com/api/v1/badges/2d6a891c-fc9f-42dd-9b38-0fe22597a730/deploy-status)](https://app.netlify.com/sites/recoil-playground/deploys)
 
 # Stack
 
 - `CRA`: as the bootstrap.
 
 - `recoil`: as the state management library.
+
+- `sass`: as the styling layer.
 
 # Notes
 
@@ -30,6 +32,10 @@ It was created using [this](https://www.youtube.com/watch?v=_ISAA_Jt9kI&ab_chann
 - `useRecoilValue`: recommended hook to use when a component intends to read state without writing to it. [Read](https://recoiljs.org/docs/api-reference/core/useRecoilValue/).
 
 - `useRecoilState`: Similar to the `useState()`. It returns a tuple of the current value of the state and a setter function. [Read](https://recoiljs.org/docs/api-reference/core/useRecoilState/).
+
+- `useSetRecoilState`: Gets only the setter from the `useState()` tuple.
+
+- `useRecoilValueLoadable`: Prevents the Suspense bug. It returns `hasValue`, `hasError` and `loading` properties, inside `state` alogn w/ `content`.
 
 # How it works
 
@@ -51,6 +57,7 @@ It was created using [this](https://www.youtube.com/watch?v=_ISAA_Jt9kI&ab_chann
 
 - use default react implementation way of coding with some minor tweaks (different from mobx)
 
+- efficiency (only render the components that uses the values from the shared state)
 # Difference from Context
 
 **context**
@@ -81,7 +88,45 @@ It was created using [this](https://www.youtube.com/watch?v=_ISAA_Jt9kI&ab_chann
 
 - You can think of derived state as the output of passing state to a pure function that modifies the given state in some way.
 
-**Derived Data**
+**Selector Family**
 
-- powerful concept because it lets us build dynamic data that depends on other data.
+- essentially provides a map from the parameter to a selector.
 
+- it has a `key`, where it's a unique string used to identify the atom internally.
+
+- This string should be unique with respect to other atoms and selectors in the entire application.
+
+```js
+const formState = atom({
+  key: 'formState',
+  default: {
+    field1: "1",
+    field2: "2",
+    field3: "3",
+  },
+});
+
+const formFieldState = selectorFamily({
+  key: 'FormField',
+  get: field => ({get}) => get(formState)[field],
+  set: field => ({set}, newValue) =>
+    set(formState, prevState => {...prevState, [field]: newValue}),
+});
+
+const Component1 = () => {
+  const [value, onChange] = useRecoilState(formFieldState('field1'));
+  return (
+    <>
+      <input value={value} onChange={onChange} />
+      <Component2 />
+    </>
+  );
+}
+
+const Component2 = () => {
+  const [value, onChange] = useRecoilState(formFieldState('field2'));
+  return (
+    <input value={value} onChange={onChange} />
+  );
+}
+```

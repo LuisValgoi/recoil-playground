@@ -1,70 +1,87 @@
-# Getting Started with Create React App
+# Branches
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+* `master` - finished code with Recoil integration
+* `original` - original imlementation using "prop drilling"
 
-## Available Scripts
+# Setup
 
-In the project directory, you can run:
+Use `npm start` to start the development server on port `3000`.
 
-### `yarn start`
+# Description
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+The goal of this project was to get to know more about the `recoil` library as the state management.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+It was created using [this](https://www.youtube.com/watch?v=_ISAA_Jt9kI&ab_channel=ReactEurope), [this](https://www.youtube.com/watch?v=wHe6-2-ZX6Y&ab_channel=LeighHallidayLeighHalliday) and [this](https://youtu.be/JvWukLAdS_8).
 
-### `yarn test`
+# Status
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+-
 
-### `yarn build`
+# Stack
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- `CRA`: as the bootstrap.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- `recoil`: as the state management library.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+# Notes
 
-### `yarn eject`
+- every component that is subscribed by an atom, will suffer from re-renders.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+- `useRecoilValue`: recommended hook to use when a component intends to read state without writing to it. [Read](https://recoiljs.org/docs/api-reference/core/useRecoilValue/).
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- `useRecoilState`: Similar to the `useState()`. It returns a tuple of the current value of the state and a setter function. [Read](https://recoiljs.org/docs/api-reference/core/useRecoilState/).
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+# How it works
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+- creating atoms for specific pieces of state & sharing for specific nodes
 
-## Learn More
+- it uses default react local state under the hood
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+# Why should I use
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- if you are running with issues where the relationships between their components don't correspond to the single hierarchy
 
-### Code Splitting
+- since react is based on nested components (Self contained)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- where there are no nesting components and you need still keep relationships with the data (show one data in the left according to the ones at the right)
 
-### Analyzing the Bundle Size
+# Benefits
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- simpler than mobx & redux
 
-### Making a Progressive Web App
+- use default react implementation way of coding with some minor tweaks (different from mobx)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+# Difference from Context
 
-### Advanced Configuration
+**context**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+- allows: consumer can consumes a value provided by the provider and not only by others (if its not wrapping it) (context has 1 value and consumer can consume that value per provider)
 
-### Deployment
+**recoil**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+- allows: provider that can provide any value where each can have its own consumers (and everyone else its just built on that)
 
-### `yarn build` fails to minify
+# Concepts
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+**Atoms**
+
+- Atoms contain the source of truth for our application state
+
+- An atom represents a piece of state.
+
+- Atoms can be read from and written to from any component.
+
+- Components that read the value of an atom are implicitly subscribed to that atom, so any atom updates will result in a re-render of all components subscribed to that atom.
+
+**Selector**
+
+- A **selector** represents a piece of **derived state**.
+
+- Derived state is a **transformation** of state.
+
+- You can think of derived state as the output of passing state to a pure function that modifies the given state in some way.
+
+**Derived Data**
+
+- powerful concept because it lets us build dynamic data that depends on other data.
+
